@@ -10,7 +10,7 @@
 ; C-x C-k n //names last keyboard macro only for session
 ;C-x C-k b //bind to key sequence
 ;M-x insert-kbd-macro <RET> macroname <RET> //inserts into current file, e.g., .emacs
-								; http://ergoemacs.org/emacs/keyboard_shortcuts_examples.html
+; http://ergoemacs.org/emacs/keyboard_shortcuts_examples.html
 ; https://github.com/fincher42/Emacs.git
 ;; ===================== Critical Startup Tasks =====================
 
@@ -23,24 +23,19 @@
        (set-frame-position (selected-frame) 965 0)
        (set-frame-size (selected-frame) 60 32)
     )
+(add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin/")
 
     ))
  ((string-equal system-type "darwin") ; Mac OS X
   (progn
     (message "Mac OS X")
-   (setq 
-   home-dir-fincher "~"
-   home-dir-bin "/opt/bin/"
-   home-dir-tmp "/tmp/"
-   home-dir-gnu "/opt/gnu/"
-   )
+   (setq emacs-dir "~/Dropbox/Emacs")
    (add-to-list 'exec-path "/usr/local/bin")
 
   (defun set-frame-windows() (interactive)
     (set-frame-position (selected-frame) 10 0)
     (set-frame-size (selected-frame) 155 38)
   ) 
-   (setq emacs-dir "~/Dropbox/Emacs")
    (global-set-key [s-up]  'beginning-of-buffer )
    (global-set-key [s-down]  'end-of-buffer )
    (global-set-key [s-l]  'editlog)
@@ -48,17 +43,14 @@
    (global-set-key [C-M-down] 'end-of-buffer)
    (global-set-key [C-M-o] 'switch-to-other-buffer)
 
-   (message "darwin!!")(sit-for 2)
     ))
  )
 (set-frame-windows)
-
 (setq  home-dir-fincher "~")
 
 (setq load-path (append (list nil emacs-dir )  load-path))
 (setq bookmark-default-file (concat emacs-dir "/.emacs.bmk"))
 ;;aspell
-(add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin/")
 (setq ispell-program-name "aspell")
 (setq ispell-personal-dictionary (concat emacs-dir "/.aspell.en.pws"))
 (require 'ispell)
@@ -1183,5 +1175,5 @@ suggest-key-bindings nil
 
 (load-file (concat emacs-dir "/remotes.el"))
 
-(message "done.")(sit-for debug-wait)
+(message (concat "Let's rock!  Emacs version " emacs-version " on ..." ))
 
