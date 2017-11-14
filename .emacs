@@ -12,6 +12,7 @@
 ;M-x insert-kbd-macro <RET> macroname <RET> //inserts into current file, e.g., .emacs
 ; http://ergoemacs.org/emacs/keyboard_shortcuts_examples.html
 ; https://github.com/fincher42/Emacs.git
+;    Last Updated:<time datetime='2017-11-13' pubdate> November 13, 2017</time>.
 ;; ===================== Critical Startup Tasks =====================
 
 (cond
@@ -23,8 +24,7 @@
        (set-frame-position (selected-frame) 965 0)
        (set-frame-size (selected-frame) 60 32)
     )
-(add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin/")
-
+    (add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin/")
     ))
  ((string-equal system-type "darwin") ; Mac OS X
   (progn
@@ -42,7 +42,6 @@
    (global-set-key [C-M-up] 'beginning-of-buffer)
    (global-set-key [C-M-down] 'end-of-buffer)
    (global-set-key [C-M-o] 'switch-to-other-buffer)
-
     ))
  )
 (set-frame-windows)
@@ -50,14 +49,21 @@
 
 (setq load-path (append (list nil emacs-dir )  load-path))
 (setq bookmark-default-file (concat emacs-dir "/.emacs.bmk"))
-;;aspell
+
+;; ===================== ispell =====================
+
 (setq ispell-program-name "aspell")
 (setq ispell-personal-dictionary (concat emacs-dir "/.aspell.en.pws"))
 (require 'ispell)
+(autoload 'ispell "ispell" "Run ispell over buffer" t)
+(autoload 'ispell-region "ispell" "Run ispell over region" t)
+(autoload 'ispell-word "ispell" "Check word under cursor" t)
+(setq-default ispell-program-name "aspell")
 
-(load-file (concat emacs-dir "/tabbar-master/tabbar.el"))
 
 ;; ===================== Misc =====================
+(load-file (concat emacs-dir "/tabbar-master/tabbar.el"))
+
 (setq debug-wait 0)
 (setq visible-bell t)
 (tool-bar-mode 0)
@@ -65,20 +71,19 @@
 
 (add-hook 'comint-output-filter-functions 'shell-strip-ctrl-m nil t)
 (put 'eval-expression 'disabled nil)
+
 (defun editemacs () (interactive) (find-file (concat emacs-dir "/.emacs") ))
 (defun reload-emacs-file () (interactive) (save-buffer)(load-file (concat emacs-dir "/.emacs") ))
+(defun find-today-in-log ()(interactive)(editlog)(beginning-of-buffer)(search-forward "<h3>")(forward-line 3))
+(defun find-today-in-log-toappend ()(interactive)(editlog)(beginning-of-buffer)(search-forward "<h3>")(search-forward "<h3>")(forward-line -2))
 
-;; ===================== Ispell Tasks =====================
-(autoload 'ispell "ispell" "Run ispell over buffer" t)
-(autoload 'ispell-region "ispell" "Run ispell over region" t)
-(autoload 'ispell-word "ispell" "Check word under cursor" t)
-(setq-default ispell-program-name "aspell")
+;; ===================== Tasks =====================
 
 (load "mymenus")
-(load "marketplace-log-mode")
-(load "zoo-log-mode")
+;(load "marketplace-log-mode")
+;(require 'marketplace-log-mode)
+;(load "zoo-log-mode")
 (require 'sgml-mode)
-;;(require 'marketplace-log-mode)
 (require 'json-snatcher) ;https://github.com/Sterlingg/json-snatcher
 (require 'json-reformat) ;https://github.com/gongo/json-reformat
 (require 'json-mode) ;https://github.com/joshwnj/json-mode;
@@ -117,8 +122,6 @@
 (global-set-key [C-end] 'end-of-buffer)
 (global-set-key [C-kp-end] 'end-of-buffer)
 (global-set-key [M-kp-end] 'end-of-buffer)
-(defun find-today-in-log ()(interactive)(editlog)(beginning-of-buffer)(search-forward "<h3>")(forward-line 3))
-(defun find-today-in-log-toappend ()(interactive)(editlog)(beginning-of-buffer)(search-forward "<h3>")(search-forward "<h3>")(forward-line -2))
 (global-set-key [C-M-kp-7] 'find-today-in-log)
 
 ;; ===================== The F Key Family =====================
@@ -208,10 +211,7 @@
 (define-key global-map "\C-a" '(lambda () (interactive) (beginning-of-line)))
 (define-key global-map "\C-D" 'dl)
 ;(define-key global-map "\C-{" 'brace4it)
-
-
 (define-key global-map "\C-\M-t"  'insert-time-stamp)
-
 (define-key global-map "\C-c\C-c"  '(lambda () (interactive)(copy-region-as-kill (point-min)(point-max))))
 (setq fill-prefix "   ")
 (define-key global-map "\C-c>"  '(lambda () (interactive)(indent-region)))
