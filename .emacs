@@ -12,7 +12,7 @@
 ;M-x insert-kbd-macro <RET> macroname <RET> //inserts into current file, e.g., .emacs
 ; http://ergoemacs.org/emacs/keyboard_shortcuts_examples.html
 ; https://github.com/fincher42/Emacs.git
-;    Last Updated:<time datetime='2017-11-13' pubdate> November 13, 2017</time>.
+;    Last Updated:<time datetime='2017-11-15' pubdate> November 15, 2017</time>.
 ;; ===================== Critical Startup Tasks =====================
 
 (cond
@@ -62,7 +62,6 @@
 
 
 ;; ===================== Misc =====================
-(load-file (concat emacs-dir "/tabbar-master/tabbar.el"))
 
 (setq debug-wait 0)
 (setq visible-bell t)
@@ -77,8 +76,9 @@
 (defun find-today-in-log ()(interactive)(editlog)(beginning-of-buffer)(search-forward "<h3>")(forward-line 3))
 (defun find-today-in-log-toappend ()(interactive)(editlog)(beginning-of-buffer)(search-forward "<h3>")(search-forward "<h3>")(forward-line -2))
 
-;; ===================== Tasks =====================
-
+;; ===================== Load Extras =====================
+(load-file (concat emacs-dir "/tabbar-master/tabbar.el"))
+(load-file (concat emacs-dir "/remotes.el"))
 (load "mymenus")
 ;(load "marketplace-log-mode")
 ;(require 'marketplace-log-mode)
@@ -103,9 +103,11 @@
 (setq mouse-wheel-progressive-speed nil) ;; or 1 to make it accelerate
 ;; 
 (global-set-key [S-mouse-3]  '(lambda ()(interactive) (transpose-lines 1)(previous-line 2)(beginning-of-line)))
+;;(global-set-key [S-mouse-3]  '(lambda ()(interactive)(beginning-of-line) (set-mark (point) )(transpose-lines 1)(goto-char (mark)) ))
+
 ;; ===================== The Right Keypad Family =====================
-(global-set-key [insert] 'switch-to-other-buffer)
 (global-set-key [kp-0] 'switch-to-other-buffer)
+(global-set-key [insert] 'switch-to-other-buffer)
 (global-set-key [C-kp-insert] 'switch-to-other-buffer)
 (global-set-key [home] 'beginning-of-line)
 (global-set-key [C-kp-home] 'beginning-of-buffer)
@@ -147,39 +149,31 @@
 (global-set-key [(shift control f2)]  'pre)
 (global-set-key [(shift control f11)]  'insert-buffer-name-and-lineno)
 (global-set-key [f12]  '(lambda () (interactive) (font-lock-fontify-buffer)(message "font locking")))
-(global-set-key [(shift f12)]  'my-c++-indent-defun)
+;(global-set-key [(shift f12)]  'my-c++-indent-defun)
 
 ;; ===================== The Meta (Esc) Key Family =====================
 (define-key global-map "\M-p" '(lambda () (interactive)(beginning-of-line)(insert "<p>")(end-of-line)(insert "</p>")(forward-line 1)(beginning-of-line)     ))
 (define-key global-map "\C-p" '(lambda () (interactive)(beginning-of-line)(insert "<p>")(end-of-line)(insert "</p>")(forward-line 1)(beginning-of-line)     ))
 (define-key esc-map "$" 'ispell-word)
-(define-key global-map "\M-\C-m" 'vm)
-(define-key global-map "\M-\C-f" '(lambda () (interactive) (insert "for(int i=0;i<100;i++)  {\n\n}")(backward-list)(indent-for-tab-command)(forward-line 2)(indent-for-tab-command)(forward-line -2)(search-forward "100")))
+;(define-key global-map "\M-\C-m" 'vm)
 (define-key global-map "\M-1" 'delete-other-windows)
 (define-key global-map "\M-2" 'split-window-vertically)
 (define-key global-map "\M-3" 'switch-to-third-buffer)
 (define-key global-map "\M-4" 'ispell-buffer)
 (define-key global-map "\M-5" 'split-window-horizontally)
-(define-key global-map "\M-8" 'showall)
 (define-key global-map "\M-b" 'bury-buffer)
 (define-key global-map "\M-d" 'insert-date-stamp)
 (define-key global-map "\M-D" 'insert-time-stamp)
 (define-key global-map "\M-e" 'editemacs)
-(define-key global-map "\M-E" '(lambda () (interactive) (find-file concat (home-dir-fincher "/local.el"))))
 (define-key global-map "\M-f" 'find-file)
 (define-key global-map "\M-k" 'kill-buffer-now)
 (define-key global-map "\M-g" 'goto-line)
-(define-key global-map "\M-h" '(lambda () (interactive) (find-file concat (home-dir-fincher "/.pers/house"))))
 (define-key global-map "\M-i" 'insert-file)
 (define-key global-map "\M-j" 'jump-back)
-
 (define-key global-map "\M-l" 'editlog)
 (define-key global-map "\M-L" '(lambda () (interactive) (editlog) (goto-char (point-min))))
 (define-key global-map "\C-L" '(lambda () (interactive) (beginning-of-line)(insert "<li>")(end-of-line)(insert "</li>")(forward-char -5) ))
-
 (define-key global-map "\M-\C-p" '(lambda () (interactive) (insert "<pre></pre>")(forward-char -6)))
-
-
 (define-key global-map "\M-r" '(lambda () (interactive) (revert-buffer t t)))
 (define-key global-map "\M-s" 'shell)
 (define-key global-map "\M-T" 'insert-time-stamp)
@@ -255,7 +249,7 @@
 
 ;////////////////////////////////////////////////////////////
 ;; Add the Last Updated: timestamp.
-;    Last Updated:<time datetime='2017-11-13' pubdate> November 13, 2017</time>.
+;    Last Updated:<time datetime='2017-11-15' pubdate> November 15, 2017</time>.
 (defvar writestamp-date-format " %B %e, %Y" "*Format for displaying time")
 (add-hook 'write-file-hooks 'update-writestamps)
 (defun update-writestamps ()
@@ -1086,7 +1080,9 @@ suggest-key-bindings nil
 ;; Use BASH shell instead of DOS shell
 (setq binary-process-input t)
 (setq w32-quote-process-args ?\")
-(setq shell-file-name "C:/cygwin/bin/bash") ;; or sh if you rename your bash executable to sh.
+(setq shell-file-name "bash.exe")
+;; or sh if you rename your bash executable to sh.
+;C:\Program Files\Git\bin\bash.exe
 (setenv "SHELL" shell-file-name)
 (setq explicit-shell-file-name shell-file-name)
 (setq explicit-sh-args '("-login" "-i"))
@@ -1142,7 +1138,6 @@ suggest-key-bindings nil
 (message "list complete.")
 )
 
-
 (defun simple-convert-html-angles ()
 " replaces all & < and > to &amp;, &lt; and &;gt; in the region"
   (interactive "*")
@@ -1165,15 +1160,9 @@ suggest-key-bindings nil
 (my-set-colors)
 (editlog)
 (recentf-mode 1)
-(message "at .96")(sit-for debug-wait)
 (setq recentf-max-saved-items 50)
 (setq delete-by-moving-to-trash t)
 (message "Let's rock!    version is %s" emacs-version )(sit-for debug-wait)
 
 
-(message "at .97")(sit-for debug-wait)
-
-(load-file (concat emacs-dir "/remotes.el"))
-
-(message (concat "Let's rock!  Emacs version " emacs-version " on ..." ))
 
