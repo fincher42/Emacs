@@ -12,7 +12,14 @@
 ;M-x insert-kbd-macro <RET> macroname <RET> //inserts into current file, e.g., .emacs
 ; http://ergoemacs.org/emacs/keyboard_shortcuts_examples.html
 ; https://github.com/fincher42/Emacs.git
-;    Last Updated:<time datetime='2017-11-15' pubdate> November 15, 2017</time>.
+								;    Last Updated:<time datetime='2017-11-16' pubdate> November 16, 2017</time>.
+; TODO:
+;;  replace (concat ) with find-file for ispell-dict
+								;  separate into smaller file
+;; rename mymenus et all to my-menus
+;; move to .emacs-d
+;; move to init.el
+;; learn to autoload log.txt with html and flyspell modes
 ;; ===================== Critical Startup Tasks =====================
 
 (cond
@@ -35,7 +42,7 @@
   (defun set-frame-windows() (interactive)
     (set-frame-position (selected-frame) 10 0)
     (set-frame-size (selected-frame) 155 38)
-  ) 
+  )
    (global-set-key [s-up]  'beginning-of-buffer )
    (global-set-key [s-down]  'end-of-buffer )
    (global-set-key [s-l]  'editlog)
@@ -44,10 +51,8 @@
    (global-set-key [C-M-o] 'switch-to-other-buffer)
     ))
  )
-(set-frame-windows)
+(add-to-list 'load-path emacs-dir)
 (setq  home-dir-fincher "~")
-
-(setq load-path (append (list nil emacs-dir )  load-path))
 (setq bookmark-default-file (concat emacs-dir "/.emacs.bmk"))
 
 ;; ===================== ispell =====================
@@ -60,9 +65,13 @@
 (autoload 'ispell-word "ispell" "Check word under cursor" t)
 (setq-default ispell-program-name "aspell")
 
+(dolist (hook '(text-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1)))); add to text-mode
+(dolist (hook '(change-log-mode-hook log-edit-mode-hook)); exclude these modes
+  (add-hook hook (lambda () (flyspell-mode -1))))
 
 ;; ===================== Misc =====================
-
+(set-frame-windows)
 (setq debug-wait 0)
 (setq visible-bell t)
 (tool-bar-mode 0)
@@ -71,15 +80,12 @@
 (add-hook 'comint-output-filter-functions 'shell-strip-ctrl-m nil t)
 (put 'eval-expression 'disabled nil)
 
-(defun editemacs () (interactive) (find-file (concat emacs-dir "/.emacs") ))
-(defun reload-emacs-file () (interactive) (save-buffer)(load-file (concat emacs-dir "/.emacs") ))
-(defun find-today-in-log ()(interactive)(editlog)(beginning-of-buffer)(search-forward "<h3>")(forward-line 3))
-(defun find-today-in-log-toappend ()(interactive)(editlog)(beginning-of-buffer)(search-forward "<h3>")(search-forward "<h3>")(forward-line -2))
 
 ;; ===================== Load Extras =====================
-(load-file (concat emacs-dir "/tabbar-master/tabbar.el"))
-(load-file (concat emacs-dir "/remotes.el"))
+(load "tabbar-master/tabbar.el")
+(load "remotes.el")
 (load "mymenus")
+(load "flyspell-1.7q")
 ;(load "marketplace-log-mode")
 ;(require 'marketplace-log-mode)
 ;(load "zoo-log-mode")
@@ -88,7 +94,6 @@
 (require 'json-reformat) ;https://github.com/gongo/json-reformat
 (require 'json-mode) ;https://github.com/joshwnj/json-mode;
  ;to use:  select all (c-x h) m-x  json-reformat-region
-
 
 ;; ===================== The Mouse Key Family =====================
 (setq mouse-drag-copy-region 't)
@@ -222,8 +227,11 @@
    (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([123 6 32 left 125] 0 "%d")) arg)))
 
 ;//////////////////////////Quickies//////////////////////////////////
+(defun editemacs () (interactive) (find-file (concat emacs-dir "/.emacs") ))
+(defun reload-emacs-file () (interactive) (save-buffer)(load-file (concat emacs-dir "/.emacs") ))
+(defun find-today-in-log ()(interactive)(editlog)(beginning-of-buffer)(search-forward "<h3>")(forward-line 3))
+(defun find-today-in-log-toappend ()(interactive)(editlog)(beginning-of-buffer)(search-forward "<h3>")(search-forward "<h3>")(forward-line -2))
 (defun editlog () (interactive) (find-file (concat home-dir-fincher "/log.txt")))
-
 (defun mark-and-copy-whole-buffer ()(interactive)(copy-region-as-kill (point-min)(point-max)))
 (defun  switch-to-other-buffer()"switch to the second buffer" (interactive)(switch-to-buffer nil) )
 (defun  switch-to-third-buffer()"switch to the second buffer" (interactive)(switch-to-buffer (car (list-buffers))) )
@@ -249,7 +257,7 @@
 
 ;////////////////////////////////////////////////////////////
 ;; Add the Last Updated: timestamp.
-;    Last Updated:<time datetime='2017-11-15' pubdate> November 15, 2017</time>.
+;    Last Updated:<time datetime='2017-11-16' pubdate> November 16, 2017</time>.
 (defvar writestamp-date-format " %B %e, %Y" "*Format for displaying time")
 (add-hook 'write-file-hooks 'update-writestamps)
 (defun update-writestamps ()
@@ -1162,7 +1170,7 @@ suggest-key-bindings nil
 (recentf-mode 1)
 (setq recentf-max-saved-items 50)
 (setq delete-by-moving-to-trash t)
-(message "Let's rock!    version is %s" emacs-version )(sit-for debug-wait)
+(message "Let's rock! (Emacs version is %s)" emacs-version )
 
 
 
