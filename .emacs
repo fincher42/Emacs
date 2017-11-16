@@ -84,7 +84,7 @@
 ;; ===================== Load Extras =====================
 (load "tabbar-master/tabbar.el")
 (load "remotes.el")
-(load "mymenus")
+(load "my-menus")
 (load "flyspell-1.7q")
 ;(load "marketplace-log-mode")
 ;(require 'marketplace-log-mode)
