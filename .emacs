@@ -14,9 +14,8 @@
 ; https://github.com/fincher42/Emacs.git
 								;    Last Updated:<time datetime='2017-11-16' pubdate> November 16, 2017</time>.
 ; TODO:
-;;  replace (concat ) with find-file for ispell-dict
-								;  separate into smaller file
-;; rename mymenus et all to my-menus
+;; replace (concat ) with find-file for ispell-dict
+;; separate into smaller files
 ;; move to .emacs-d
 ;; move to init.el
 ;; learn to autoload log.txt with html and flyspell modes
@@ -65,7 +64,7 @@
 (autoload 'ispell-word "ispell" "Check word under cursor" t)
 (setq-default ispell-program-name "aspell")
 
-(dolist (hook '(text-mode-hook))
+(dolist (hook '(text-mode-hook html-mode-hook))
   (add-hook hook (lambda () (flyspell-mode 1)))); add to text-mode
 (dolist (hook '(change-log-mode-hook log-edit-mode-hook)); exclude these modes
   (add-hook hook (lambda () (flyspell-mode -1))))
@@ -75,7 +74,7 @@
 (setq debug-wait 0)
 (setq visible-bell t)
 (tool-bar-mode 0)
-(setq bell-volume 0)   ;; turn off that annoying bell
+(setq bell-volume 0);; turn off that annoying bell
 
 (add-hook 'comint-output-filter-functions 'shell-strip-ctrl-m nil t)
 (put 'eval-expression 'disabled nil)
@@ -917,6 +916,7 @@ require-final-newline nil
         ("\\.xsl$" . html-mode)
         ("\\.xslt$" . html-mode)
         ("\\.shtml$" . html-mode)
+        ("log\\.txt$" . html-mode)
         ("\\.php$" . html-mode)
         ("\\.html$" . html-mode)
         ("\\.stm$" . html-mode)
